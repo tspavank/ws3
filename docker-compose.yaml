@@ -1,0 +1,40 @@
+version: '3.2'
+
+services: 
+
+ angular: #ui
+  build: /home/ubuntu/ZPUIAPIinternal/ui
+  ports:
+  - "4020:4020"
+  
+ express: #node api
+  build: /home/ubuntu/ZPUIAPIinternal/api
+  environment:
+   - mongodb://db:27017/CRDB02
+  ports:
+  - "6060:6060"
+  links:
+  - db
+  depends_on:
+  - db
+
+ db: #database
+  image: mongo:latest
+  container_name: "db"
+  environment:
+  - MONGO_DATA_DIR=/data/db
+  - MONGO_LOG_DIR=/dev/null
+  volumes:
+  - ./data/db:/data/db
+  ports:
+  - "27017:27017"
+#  volumes:
+#  - /app/hdp/mongo/data:/data/db
+#  command: mongod --auth
+  command: mongod --smallfiles --logpath=/dev/null
+
+
+#  volumes:
+#  - /app/hdp/mongo/data:/data/db
+#  command: mongod --auth
+
